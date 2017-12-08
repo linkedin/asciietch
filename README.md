@@ -1,10 +1,10 @@
-# Ascii Etch
-A graphing library with the goal of making it simple to graphs using ascii characters.
+# Ascii Etch [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
+A graphing library with the goal of making it simple to graph series of numbers using ascii characters.
 
 ## Quick Start
-To start using Ascii Etch ensure Python 3.6+ is installed. Then install asciietch using pip3:
+To start using Ascii Etch ensure Python 3.6 or higher is installed. Then install asciietch using pip3.6 or higher:
 ```
-pip3 install asciietch
+pip3.6 install asciietch
 ```
 Then import asciietch and begin using it.
 ## Examples
@@ -20,7 +20,7 @@ Then import asciietch and begin using it.
  /
 /
 ```
-### Graphing ups and downs
+### Graphing more values
 ```python
 >>> from asciietch.graph import Grapher
 >>> g = Grapher()
@@ -32,7 +32,7 @@ Then import asciietch and begin using it.
  /      -
 /
 ```
-### Graphing a large set of values and add labels
+### Graphing a large set of values and adding labels
 ```python
 >>> import random
 >>> from asciietch.graph import Grapher
@@ -55,7 +55,7 @@ Upper value: 147.6 *************************************************************
                                                                                        \------      
                                                                                               \-   -
                                                                                                 \-/ 
-Lower value: 85.3 ***************************** Mean: 122.196 *** Std Dev: 16.204881430673357 ******
+Lower value: 85.3 ********************************************* Mean: 122.196 *** Std Dev: 16.20 ***
 ```
 
 ## Contributing Code

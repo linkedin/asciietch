@@ -15,18 +15,19 @@ except IOError:
 
 setup(
     name='asciietch',
-    version='0.0.1',
+    version='1.0.0',
     description=description,
     long_description=description,
-    # url='https://github.com/linkedin/asciietch',
-    author='LinkedIn',
+    url='https://github.com/linkedin/asciietch',
+    author='Steven R. Callister',
     author_email='scallist@linkedin.com',
     license='License :: OSI Approved :: BSD License',
     packages=find_packages(),
     install_requires=[
         'flake8==3.5.0',
         'mock==2.0.0',
-        'parsedatetime==2.3',
+        'parsedatetime==2.4',
+        'pytest==3.0.6'
     ],
     tests_require=[
         'pytest==3.0.6',

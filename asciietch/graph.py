@@ -172,12 +172,12 @@ class Grapher(object):
 
         # Label the graph
         if label:
-            top_label = 'Upper value: {upper_value} '.format(upper_value=upper_value).ljust(max_width, border_fill_char)
+            top_label = 'Upper value: {upper_value:.2f} '.format(upper_value=upper_value).ljust(max_width, border_fill_char)
             result += top_label + '\n'
         result += '{graph_string}\n'.format(graph_string=graph_string)
         if label:
-            lower = f'Lower value: {lower_value} '
-            stats = f' Mean: {mean} *** Std Dev: {stdev} ******'
+            lower = f'Lower value: {lower_value:.2f} '
+            stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
             fill_length = max_width - len(lower) - len(stats)
             stat_label = f'{lower}{"*" * fill_length}{stats}\n'
             result += stat_label
