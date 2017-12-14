@@ -9,11 +9,13 @@ pip3.6 install asciietch
 Then import asciietch and begin using it.
 ## Examples
 ### Graphing 0-4 values
-```
+```python
 >>> from asciietch.graph import Grapher
 >>> g = Grapher()
 >>> values = [0, 1, 2, 3, 4]
 >>> print(g.asciigraph(values))
+```
+```python
     -
    /
   /
@@ -21,11 +23,13 @@ Then import asciietch and begin using it.
 /
 ```
 ### Graphing more values
-```
+```python
 >>> from asciietch.graph import Grapher
 >>> g = Grapher()
 >>> values = [0, 1, 2, 3, 4, 4, 3, 2, 1, 2, 2, 2]
 >>> print(g.asciigraph(values))
+```
+```
     --
    /  \
   /    \ ---
@@ -33,7 +37,7 @@ Then import asciietch and begin using it.
 /
 ```
 ### Graphing a large set of values and adding labels
-```
+```python
 >>> import random
 >>> from asciietch.graph import Grapher
 >>> g = Grapher()
@@ -43,6 +47,8 @@ Then import asciietch and begin using it.
 ...     v = v + random.randint(-1, 1)
 ...     values.append(v)
 >>> print(g.asciigraph(values, max_height=10, max_width=100, label=True))
+```
+```
 Upper value: 147.6 *********************************************************************************
                              -------- ---                                                           
                         ----/        -   \-      -                                                  
