@@ -15,7 +15,7 @@ except IOError:
 
 setup(
     name='asciietch',
-    version='1.0.0',
+    version='1.0.1',
     description=description,
     long_description=description,
     url='https://github.com/linkedin/asciietch',
@@ -24,13 +24,12 @@ setup(
     license='License :: OSI Approved :: BSD License',
     packages=find_packages(),
     install_requires=[
-        'flake8==3.5.0',
-        'mock==2.0.0',
-        'parsedatetime==2.4',
-        'pytest==3.0.6'
+        'parsedatetime==2.4'
     ],
     tests_require=[
-        'pytest==3.0.6',
+        'flake8>=3.5.0',
+        'mock>=2.0.0',
+        'pytest>=3.0.6'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
