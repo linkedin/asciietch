@@ -2,8 +2,16 @@
 # See LICENSE in the project root for license information.
 
 import io
+import venv
+import sys
 
-from setuptools import setup, find_packages
+from pathlib import Path
+
+from setuptools import setup, find_packages, Command
+
+if sys.version_info < (3, 6):
+    print('asciietch requires at least Python 3.6!')
+    sys.exit(1)
 
 
 description = 'A library for graphing charts using ascii characters.'
@@ -13,6 +21,32 @@ try:
 except IOError:
     long_description = description
 
+
+class Venv(Command):
+    user_options = []
+
+    def initialize_options(self):
+        """Abstract method that is required to be overwritten"""
+
+    def finalize_options(self):
+        """Abstract method that is required to be overwritten"""
+
+    def run(self):
+        venv_path = Path(__file__).absolute().parent / 'venv' / 'asciietch'
+        print(f'Creating virtual environment in {venv_path}')
+        venv.main(args=[str(venv_path)])
+        print(
+            'Linking `activate` to top level of project.\n'
+            'To activate, simply run `source activate`.'
+        )
+        activate = Path(venv_path, 'bin', 'activate')
+        activate_link = Path(__file__).absolute().parent / 'activate'
+        try:
+            activate_link.symlink_to(activate)
+        except FileExistsError:
+            ...
+
+
 setup(
     name='asciietch',
     version='1.0.1',
@@ -21,6 +55,7 @@ setup(
     url='https://github.com/linkedin/asciietch',
     author='Steven R. Callister',
     author_email='scallist@linkedin.com',
+    cmdclass={'venv': Venv},
     license='License :: OSI Approved :: BSD License',
     packages=find_packages(),
     install_requires=[
@@ -41,5 +76,5 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3 :: Only',
         'Operating System :: POSIX :: Linux'
-    ]
+    ],
 )
