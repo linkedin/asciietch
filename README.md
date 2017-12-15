@@ -64,6 +64,23 @@ Upper value: 147.6 *************************************************************
 Lower value: 85.3 ********************************************* Mean: 122.196 *** Std Dev: 16.20 ***
 ```
 
+## Developing
+
+```sh
+git clone git@github.com:linkedin/asciietch.git
+cd asciietch
+python3 setup.py venv
+source activate
+python3 setup.py develop
+```
+
+## Testing
+
+```sh
+pip3.6 install tox
+tox
+```
+
 ## Contributing Code
 Contributions are welcome, see [Contribution guidelines for this project](CONTRIBUTING.md)
 
