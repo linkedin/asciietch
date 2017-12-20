@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from setuptools import setup, find_packages, Command
+from setuptools.command.test import test as TestCommand
 
 if sys.version_info < (3, 6):
     print('asciietch requires at least Python 3.6!')
@@ -20,6 +21,26 @@ try:
             long_description = fh.read()
 except IOError:
     long_description = description
+
+
+class Tox(TestCommand):
+    def run_tests(self):
+        import tox
+
+        errno = -1
+        try:
+            tox.session.main()
+        except SystemExit as e:
+            errno = e.code
+        sys.exit(errno)
+
+
+class PyTest(TestCommand):
+    def run_tests(self):
+        import pytest
+
+        errno = pytest.main()
+        sys.exit(errno)
 
 
 class Venv(Command):
@@ -55,16 +76,21 @@ setup(
     url='https://github.com/linkedin/asciietch',
     author='Steven R. Callister',
     author_email='scallist@linkedin.com',
-    cmdclass={'venv': Venv},
+    cmdclass={'venv': Venv,
+              'test': PyTest,
+              'pytest': PyTest,
+              'tox': Tox,
+              },
     license='License :: OSI Approved :: BSD License',
     packages=find_packages(),
     install_requires=[
-        'parsedatetime==2.4'
+        'parsedatetime==2.4',
+        'setuptools>=30',
     ],
     tests_require=[
         'flake8>=3.5.0',
-        'mock>=2.0.0',
-        'pytest>=3.0.6'
+        'pytest>=3.0.6',
+        'tox',
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
