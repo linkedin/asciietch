@@ -139,3 +139,14 @@ def test_timestamp_scaling():
     print(f"result: {result}")
     assert len(result) == 1
     assert 4.5 in result
+
+
+def test_timestamp_as_string():
+    g = Grapher()
+    ts = 1512431401.0
+    values = [(str(ts + v), v % 10) for v in range(100)]
+    print(f"values: {values}")
+    result = g._scale_x_values_timestamps(values=values, max_width=1)
+    print(f"result: {result}")
+    assert len(result) == 1
+    assert 4.5 in result

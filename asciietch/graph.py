@@ -26,12 +26,13 @@ class Grapher(object):
 
     def _scale_x_values_timestamps(self, values, max_width):
         '''Scale X values to new width based on timestamps'''
-        first_timestamp = values[0][0]
-        last_timestamp = values[-1][0]
+        first_timestamp = float(values[0][0])
+        last_timestamp = float(values[-1][0])
         step_size = (last_timestamp - first_timestamp) / max_width
 
         values_by_column = [[] for i in range(max_width)]
         for timestamp, value in values:
+            timestamp = float(timestamp)
             column = (timestamp - first_timestamp) // step_size
             column = int(min(column, max_width - 1))  # Don't go beyond the last column
             values_by_column[column].append(value)
@@ -137,9 +138,6 @@ class Grapher(object):
         start_ctime = None
         end_ctime = None
 
-        if not max_height:
-            max_height = min(20, max(values))
-
         if not max_width:
             max_width = 180
 
@@ -154,6 +152,9 @@ class Grapher(object):
             end_ctime = datetime.fromtimestamp(float(end_timestamp)).ctime()
             values = self._scale_x_values_timestamps(values=time_series_sorted, max_width=max_width)
         values = [value for value in values if value is not None]
+
+        if not max_height:
+            max_height = min(20, max(values))
 
         stdev = statistics.stdev(values)
         mean = statistics.mean(values)
