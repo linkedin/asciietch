@@ -70,7 +70,7 @@ class Venv(Command):
 
 setup(
     name='asciietch',
-    version='1.0.2',
+    version='1.0.3',
     description=description,
     long_description=description,
     url='https://github.com/linkedin/asciietch',
