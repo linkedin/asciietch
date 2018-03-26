@@ -134,9 +134,9 @@ def test_timestamp_scaling():
     g = Grapher()
     ts = 1512431401.0
     values = [(ts + v, v % 10) for v in range(100)]
-    print(f"values: {values}")
+    log.debug(f"values: {values}")
     result = g._scale_x_values_timestamps(values=values, max_width=1)
-    print(f"result: {result}")
+    log.debug(f"result: {result}")
     assert len(result) == 1
     assert 4.5 in result
 
@@ -145,8 +145,19 @@ def test_timestamp_as_string():
     g = Grapher()
     ts = 1512431401.0
     values = [(str(ts + v), v % 10) for v in range(100)]
-    print(f"values: {values}")
+    log.debug(f"values: {values}")
     result = g._scale_x_values_timestamps(values=values, max_width=1)
-    print(f"result: {result}")
+    log.debug(f"result: {result}")
     assert len(result) == 1
     assert 4.5 in result
+
+
+def test_timestamp_as_string_with_none_values():
+    g = Grapher()
+    ts = 1512431401.0
+    values = [(str(ts + v), None if v == 0 else v % 10) for v in range(100)]
+    log.debug(f"values: {values}")
+    result = g._scale_x_values_timestamps(values=values, max_width=1)
+    log.debug(f"result: {result}")
+    assert len(result) == 1
+    assert result[0] > 4.5 and result[0] < 5
