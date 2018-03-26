@@ -32,6 +32,8 @@ class Grapher(object):
 
         values_by_column = [[] for i in range(max_width)]
         for timestamp, value in values:
+            if value is None:
+                continue
             timestamp = float(timestamp)
             column = (timestamp - first_timestamp) // step_size
             column = int(min(column, max_width - 1))  # Don't go beyond the last column
