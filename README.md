@@ -1,3 +1,10 @@
+# 🚨 UNMAINTAINED 🚨 
+
+This project is no longer used by LinkedIn and is currently unmaintained.
+
+If you would like to maintain this project, please send an email to
+oss@linkedin.com.
+
 # Ascii Etch [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause) [![Build Status](https://travis-ci.org/linkedin/asciietch.svg?branch=master)](https://travis-ci.org/linkedin/asciietch) [![Coverage Status](https://coveralls.io/repos/github/linkedin/asciietch/badge.svg)](https://coveralls.io/github/linkedin/asciietch)
 A graphing library with the goal of making it simple to graph series of numbers using ascii characters.
 
