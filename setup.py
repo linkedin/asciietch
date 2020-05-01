@@ -14,11 +14,10 @@ if sys.version_info < (3, 6):
     print('asciietch requires at least Python 3.6!')
     sys.exit(1)
 
-
 description = 'A library for graphing charts using ascii characters.'
 try:
     with io.open('README.md', encoding="utf-8") as fh:
-            long_description = fh.read()
+        long_description = fh.read()
 except IOError:
     long_description = description
 
