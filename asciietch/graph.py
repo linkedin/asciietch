@@ -30,7 +30,7 @@ class Grapher(object):
         last_timestamp = float(values[-1][0])
         step_size = (last_timestamp - first_timestamp) / max_width
 
-        values_by_column = [[] for i in range(max_width)]
+        values_by_column = [[] for _ in range(max_width)]
         for timestamp, value in values:
             if value is None:
                 continue
@@ -162,7 +162,6 @@ class Grapher(object):
         mean = statistics.mean(values)
 
         # Do value adjustments
-        adjusted_values = list(values)
         adjusted_values = self._scale_x_values(values=values, max_width=max_width)
         upper_value = max(adjusted_values)  # Getting upper/lower after scaling x values so we don't label a spike we can't see
         lower_value = min(adjusted_values)
