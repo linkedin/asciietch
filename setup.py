@@ -72,7 +72,7 @@ setup(
     name='asciietch',
     version='1.0.4',
     description=description,
-    long_description=description,
+    long_description=long_description,
     url='https://github.com/linkedin/asciietch',
     author='Steven R. Callister',
     author_email='scallist@linkedin.com',
