@@ -108,13 +108,9 @@ class Grapher(object):
             char = '/'
         elif y_next < y:
             char = '\\'
-        elif y_prev < y:
-            char = '/'
         elif y_prev > y:
             char = '\\'
         elif y_next == y:
-            char = '-'
-        elif y == y_prev:
             char = '-'
         return char
 
