@@ -149,9 +149,6 @@ class Grapher(object):
         if not max_height:
             max_height = min(20, max(values))
 
-        stdev = statistics.stdev(values)
-        mean = statistics.mean(values)
-
         # Do value adjustments
         adjusted_values = self._scale_x_values(values=values, max_width=max_width)
         upper_value = max(adjusted_values)  # Getting upper/lower after scaling x values so we don't label a spike we can't see
@@ -169,6 +166,9 @@ class Grapher(object):
             result += top_label + '\n'
         result += '{graph_string}\n'.format(graph_string=graph_string)
         if label:
+            stdev = statistics.stdev(values)
+            mean = statistics.mean(values)
+
             lower = f'Lower value: {lower_value:.2f} '
             stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
             fill_length = max_width - len(lower) - len(stats)
