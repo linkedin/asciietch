@@ -10,10 +10,6 @@ class Grapher(object):
 
     def _scale_x_values(self, values, max_width):
         '''Scale X values to new width'''
-
-        if type(values) == dict:
-            values = self._scale_x_values_timestamps(values=values, max_width=max_width)
-
         adjusted_values = list(values)
         if len(adjusted_values) > max_width:
 
