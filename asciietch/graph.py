@@ -43,7 +43,7 @@ class Grapher(object):
 
         return adjusted_values
 
-    def _scale_y_values(self, values, new_min, new_max, scale_old_from_zero=True):
+    def _scale_y_values(self, values, new_max, new_min=0, scale_old_from_zero=True):
         '''
         Take values and transmute them into a new range
         '''
@@ -53,7 +53,6 @@ class Grapher(object):
         if scale_old_from_zero:
             y_min_value = 0
         y_max_value = max(values)
-        new_min = 0
         OldRange = (y_max_value - y_min_value) or 1  # Prevents division by zero if all values are the same
         NewRange = (new_max - new_min)  # max_height is new_max
         for old_value in values:
