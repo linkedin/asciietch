@@ -83,6 +83,3 @@ tox
 
 ## Contributing Code
 Contributions are welcome, see [Contribution guidelines for this project](CONTRIBUTING.md)
-
-## More information
-Feel free to reach out if you have any questions [scallister@linkedin.com](mailto:scallister@linkedin.com)
