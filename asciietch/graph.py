@@ -10,10 +10,6 @@ class Grapher(object):
 
     def _scale_x_values(self, values, max_width):
         '''Scale X values to new width'''
-
-        if type(values) == dict:
-            values = self._scale_x_values_timestamps(values=values, max_width=max_width)
-
         adjusted_values = list(values)
         if len(adjusted_values) > max_width:
 
@@ -30,7 +26,7 @@ class Grapher(object):
         last_timestamp = float(values[-1][0])
         step_size = (last_timestamp - first_timestamp) / max_width
 
-        values_by_column = [[] for i in range(max_width)]
+        values_by_column = [[] for _ in range(max_width)]
         for timestamp, value in values:
             if value is None:
                 continue
@@ -43,7 +39,7 @@ class Grapher(object):
 
         return adjusted_values
 
-    def _scale_y_values(self, values, new_min, new_max, scale_old_from_zero=True):
+    def _scale_y_values(self, values, new_max, new_min=0, scale_old_from_zero=True):
         '''
         Take values and transmute them into a new range
         '''
@@ -53,7 +49,6 @@ class Grapher(object):
         if scale_old_from_zero:
             y_min_value = 0
         y_max_value = max(values)
-        new_min = 0
         OldRange = (y_max_value - y_min_value) or 1  # Prevents division by zero if all values are the same
         NewRange = (new_max - new_min)  # max_height is new_max
         for old_value in values:
@@ -95,29 +90,25 @@ class Grapher(object):
         return field
 
     def _assign_ascii_character(self, y_prev, y, y_next):  # noqa for complexity
-            '''Assign the character to be placed into the graph'''
-            char = '?'
-            if y_next > y and y_prev > y:
-                char = '-'
-            elif y_next < y and y_prev < y:
-                char = '-'
-            elif y_prev < y and y == y_next:
-                char = '-'
-            elif y_prev == y and y_next < y:
-                char = '-'
-            elif y_next > y:
-                char = '/'
-            elif y_next < y:
-                char = '\\'
-            elif y_prev < y:
-                char = '/'
-            elif y_prev > y:
-                char = '\\'
-            elif y_next == y:
-                char = '-'
-            elif y == y_prev:
-                char = '-'
-            return char
+        '''Assign the character to be placed into the graph'''
+        char = '?'
+        if y_next > y and y_prev > y:
+            char = '-'
+        elif y_next < y and y_prev < y:
+            char = '-'
+        elif y_prev < y and y == y_next:
+            char = '-'
+        elif y_prev == y and y_next < y:
+            char = '-'
+        elif y_next > y:
+            char = '/'
+        elif y_next < y:
+            char = '\\'
+        elif y_prev > y:
+            char = '\\'
+        elif y_next == y:
+            char = '-'
+        return char
 
     def _draw_ascii_graph(self, field):
         '''Draw graph from field double nested list, format field[x][y] = char'''
@@ -158,11 +149,7 @@ class Grapher(object):
         if not max_height:
             max_height = min(20, max(values))
 
-        stdev = statistics.stdev(values)
-        mean = statistics.mean(values)
-
         # Do value adjustments
-        adjusted_values = list(values)
         adjusted_values = self._scale_x_values(values=values, max_width=max_width)
         upper_value = max(adjusted_values)  # Getting upper/lower after scaling x values so we don't label a spike we can't see
         lower_value = min(adjusted_values)
@@ -179,6 +166,9 @@ class Grapher(object):
             result += top_label + '\n'
         result += '{graph_string}\n'.format(graph_string=graph_string)
         if label:
+            stdev = statistics.stdev(values)
+            mean = statistics.mean(values)
+
             lower = f'Lower value: {lower_value:.2f} '
             stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
             fill_length = max_width - len(lower) - len(stats)
