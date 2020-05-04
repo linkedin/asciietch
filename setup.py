@@ -69,12 +69,11 @@ class Venv(Command):
 
 setup(
     name='asciietch',
-    version='1.0.4',
+    version='1.0.5',
     description=description,
     long_description=long_description,
     url='https://github.com/linkedin/asciietch',
     author='Steven R. Callister',
-    author_email='scallist@linkedin.com',
     cmdclass={'venv': Venv,
               'test': PyTest,
               'pytest': PyTest,
