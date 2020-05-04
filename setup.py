@@ -72,6 +72,7 @@ setup(
     version='1.0.5',
     description=description,
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/linkedin/asciietch',
     author='Steven R. Callister',
     cmdclass={'venv': Venv,
