@@ -4,7 +4,7 @@ A graphing library with the goal of making it simple to graph series of numbers 
 ## Quick Start
 To start using Ascii Etch ensure Python 3.6 or higher is installed. Then install asciietch using pip3.6 or higher:
 ```
-pip3.6 install asciietch
+pip3 install asciietch
 ```
 Then import asciietch and begin using it.
 ## Examples
