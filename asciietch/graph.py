@@ -49,10 +49,11 @@ class Grapher(object):
         if scale_old_from_zero:
             y_min_value = 0
         y_max_value = max(values)
-        OldRange = (y_max_value - y_min_value) or 1  # Prevents division by zero if all values are the same
-        NewRange = (new_max - new_min)  # max_height is new_max
+        # Prevents division by zero if all values are the same
+        old_range = (y_max_value - y_min_value) or 1
+        new_range = (new_max - new_min)  # max_height is new_max
         for old_value in values:
-            new_value = (((old_value - y_min_value) * NewRange) / OldRange) + new_min
+            new_value = (((old_value - y_min_value) * new_range) / old_range) + new_min
             scaled_values.append(new_value)
         return scaled_values
 
