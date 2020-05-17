@@ -124,7 +124,7 @@ class Grapher(object):
         graph_string = '\n'.join(row_strings)
         return graph_string
 
-    def asciigraph(self, values=None, max_height=None, max_width=None, label=False):
+    def asciigraph(self, values, max_height=None, max_width=None, label=False):
         '''
         Accepts a list of y values and returns an ascii graph
         Optionally values can also be a dictionary with a key of timestamp, and a value of value. InGraphs returns data in this format for example.
