@@ -6,6 +6,7 @@ import statistics
 from datetime import datetime
 
 BORDER_FILL_CHARACTER = '*'
+DEFAULT_MAX_WIDTH = 180
 
 
 class Grapher(object):
@@ -132,8 +133,7 @@ class Grapher(object):
         start_ctime = None
         end_ctime = None
 
-        if not max_width:
-            max_width = 180
+        max_width = max_width or DEFAULT_MAX_WIDTH
 
         # If this is a dict of timestamp -> value, sort the data, store the start/end time, and convert values to a list of values
         if isinstance(values, dict):
@@ -230,8 +230,7 @@ class Grapher(object):
         start_ctime = None
         end_ctime = None
 
-        if not max_width:
-            max_width = 180
+        max_width = max_width or DEFAULT_MAX_WIDTH
 
         max_height = len(allowed_bars_in_order) - 1
 
