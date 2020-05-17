@@ -185,15 +185,11 @@ class Grapher(object):
         return start_ctime, end_ctime
 
     def _sort_timeseries_values(self, values_dict):
-        """Sort the data by time if data is given as a time->value dictionary."""
-        values_timestamps = {
-            datetime.strptime(value, '%d-%m-%Y').timestamp(): values_dict[value]
-            for value in values_dict
-        }
-        # Sort timestamp/value dict by the timestamps
-        time_series_sorted = sorted(list(values_timestamps.items()),
-                                    key=lambda x: x[0])
-        return time_series_sorted
+        """Sort the data by time if data is given as a time->value dictionary.
+
+        Sort the timeseries data and return as list of tuples.
+        """
+        return sorted(values_dict.items(), key=lambda x: x[0])
 
     def _surround_with_label(self,
                              graph_string,
