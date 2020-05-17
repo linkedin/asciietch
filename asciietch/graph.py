@@ -137,13 +137,8 @@ class Grapher(object):
 
         # If this is a dict of timestamp -> value, sort the data, store the start/end time, and convert values to a list of values
         if isinstance(values, dict):
-            time_series_sorted = sorted(list(values.items()), key=lambda x: x[0])  # Sort timestamp/value dict by the timestamps
-
-            start_timestamp = time_series_sorted[0][0]
-            end_timestamp = time_series_sorted[-1][0]
-
-            start_ctime = datetime.fromtimestamp(float(start_timestamp)).ctime()
-            end_ctime = datetime.fromtimestamp(float(end_timestamp)).ctime()
+            time_series_sorted = self._sort_timeseries_values(values)
+            start_ctime, end_ctime = self._get_start_and_end_ctimes(time_series_sorted)
             values = self._scale_x_values_timestamps(values=time_series_sorted, max_width=max_width)
         values = [value for value in values if value is not None]
 
@@ -178,6 +173,27 @@ class Grapher(object):
         else:
             result = graph_string
         return result
+
+    def _get_start_and_end_ctimes(self, time_series_sorted):
+        """Get the start and end times of a sorted time series data as ctime. """
+        start_timestamp = time_series_sorted[0][0]
+        end_timestamp = time_series_sorted[-1][0]
+
+        start_ctime = datetime.fromtimestamp(float(start_timestamp)).ctime()
+        end_ctime = datetime.fromtimestamp(float(end_timestamp)).ctime()
+
+        return start_ctime, end_ctime
+
+    def _sort_timeseries_values(self, values_dict):
+        """Sort the data by time if data is given as a time->value dictionary."""
+        values_timestamps = {
+            datetime.strptime(value, '%d-%m-%Y').timestamp(): values_dict[value]
+            for value in values_dict
+        }
+        # Sort timestamp/value dict by the timestamps
+        time_series_sorted = sorted(list(values_timestamps.items()),
+                                    key=lambda x: x[0])
+        return time_series_sorted
 
     def _surround_with_label(self,
                              graph_string,
