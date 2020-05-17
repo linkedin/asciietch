@@ -5,6 +5,8 @@ import statistics
 import random
 from datetime import datetime
 
+BORDER_FILL_CHARACTER = '*'
+
 
 class Grapher(object):
 
@@ -127,8 +129,6 @@ class Grapher(object):
         Accepts a list of y values and returns an ascii graph
         Optionally values can also be a dictionary with a key of timestamp, and a value of value. InGraphs returns data in this format for example.
         '''
-        result = ''
-        border_fill_char = '*'
         start_ctime = None
         end_ctime = None
 
@@ -162,23 +162,49 @@ class Grapher(object):
         graph_string = self._draw_ascii_graph(field=field)
 
         # Label the graph
-        if label:
-            top_label = 'Upper value: {upper_value:.2f} '.format(upper_value=upper_value).ljust(max_width, border_fill_char)
-            result += top_label + '\n'
-        result += '{graph_string}\n'.format(graph_string=graph_string)
+
         if label:
             stdev = statistics.stdev(values)
             mean = statistics.mean(values)
 
-            lower = f'Lower value: {lower_value:.2f} '
-            stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
-            fill_length = max_width - len(lower) - len(stats)
-            stat_label = f'{lower}{"*" * fill_length}{stats}\n'
-            result += stat_label
+            result = self._surround_with_label(graph_string,
+                                               max_width,
+                                               upper_value,
+                                               lower_value,
+                                               stdev,
+                                               mean,
+                                               start_ctime,
+                                               end_ctime)
+        else:
+            result = graph_string
+        return result
 
-            if start_ctime and end_ctime:
-                fill_length = max_width - len(start_ctime) - len(end_ctime)
-                result += f'{start_ctime}{" " * fill_length}{end_ctime}\n'
+    def _surround_with_label(self,
+                             graph_string,
+                             max_width,
+                             max_val,
+                             min_val,
+                             stdev,
+                             mean,
+                             start_ctime=None,
+                             end_ctime=None):
+        """Surround the graph string with labels.
+
+        It adds a top label with the max value of the data.
+        And a bottom label with min value and data statistics.
+        """
+        top_label = f'Upper value: {max_val:.2f} '.ljust(max_width, BORDER_FILL_CHARACTER)
+        lower = f'Lower value: {min_val:.2f} '
+        stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
+        fill_length = max_width - len(lower) - len(stats)
+        stat_label = f'{lower}{"*" * fill_length}{stats}'
+
+        result = top_label + '\n' + graph_string + '\n' + stat_label
+
+        if start_ctime and end_ctime:
+            fill_length = max_width - len(start_ctime) - len(end_ctime)
+            time_label = f'{start_ctime}{" " * fill_length}{end_ctime}\n'
+            result += time_label
 
         return result
 
