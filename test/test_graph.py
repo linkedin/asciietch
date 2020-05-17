@@ -161,3 +161,22 @@ def test_timestamp_as_string_with_none_values():
     log.debug(f"result: {result}")
     assert len(result) == 1
     assert result[0] > 4.5 and result[0] < 5
+
+def test_surround_with_label_adds_two_extra_lines():
+    """Surround with label adds a line above and below the graph string."""
+    graph_string = \
+        '''
+          /
+         /
+        /
+        '''
+    g = Grapher()
+    label_surrounded_string = g._surround_with_label(
+        graph_string,
+        100,
+        4,
+        0,
+        1.29,
+        2.5
+    )
+    assert len(label_surrounded_string.splitlines()) == len(graph_string.splitlines()) + 2
