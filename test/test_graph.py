@@ -215,8 +215,7 @@ class TestAsciiHist:
         assert len(ascii_histogram) == 3
 
 
-def test_surround_with_label_adds_two_extra_lines():
-    """Surround with label adds a line above and below the graph string."""
+class TestSurroundWithLabel:
     graph_string = \
         '''
           /
@@ -224,12 +223,29 @@ def test_surround_with_label_adds_two_extra_lines():
         /
         '''
     g = Grapher()
-    label_surrounded_string = g._surround_with_label(
-        graph_string,
-        100,
-        4,
-        0,
-        1.29,
-        2.5
-    )
-    assert len(label_surrounded_string.splitlines()) == len(graph_string.splitlines()) + 2
+
+    def test_surround_adds_two_extra_lines(self):
+        """Surround with label adds a line above and below the graph string."""
+        label_surrounded_string = self.g._surround_with_label(
+            self.graph_string,
+            100,
+            4,
+            0,
+            1.29,
+            2.5
+        )
+        assert len(label_surrounded_string.splitlines()) == len(self.graph_string.splitlines()) + 2
+
+    def test_surround_adds_three_lines_with_timestamps(self):
+        """Surround with label will add another line for timestamps at the end."""
+        label_surrounded_string = self.g._surround_with_label(
+            self.graph_string,
+            100,
+            4,
+            0,
+            1.29,
+            2.5,
+            start_ctime='Wed Jan  1 00:00:00 2020',
+            end_ctime='Sun Jan  5 00:00:00 2020',
+        )
+        assert len(label_surrounded_string.splitlines()) == len(self.graph_string.splitlines()) + 3
