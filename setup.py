@@ -69,7 +69,7 @@ class Venv(Command):
 
 setup(
     name='asciietch',
-    version='1.0.5',
+    version='1.0.6',
     description=description,
     long_description=long_description,
     long_description_content_type='text/markdown',
