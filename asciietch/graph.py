@@ -240,12 +240,11 @@ class Grapher(object):
             time_series_sorted = self._sort_timeseries_values(values)
             start_ctime, end_ctime = self._get_start_and_end_ctimes(time_series_sorted)
             values = self._scale_x_values_timestamps(values=time_series_sorted, max_width=max_width)
+
         values = [value for value in values if value is not None]
-        # print(values)
 
         # Do value adjustments
         adjusted_values = self._scale_x_values(values=values, max_width=max_width)
-        # print(adjusted_values)
 
         # Getting upper/lower after scaling x values so we don't label a spike we can't see
         upper_value = max(adjusted_values)
@@ -254,7 +253,6 @@ class Grapher(object):
         adjusted_values = self._scale_y_values(values=adjusted_values, new_min=0,
                                                new_max=max_height, scale_old_from_zero=False)
         adjusted_values = self._round_floats_to_ints(values=adjusted_values)
-        # print(f'After scaling y: {adjusted_values}')
 
         # Obtain Ascii Histogram String
         field = [allowed_bars_in_order[val] for val in adjusted_values]

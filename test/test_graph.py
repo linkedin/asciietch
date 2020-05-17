@@ -28,7 +28,6 @@ def test_ascii_scale_values_down():
 
 
 def test_ascii_scale_values_equal():
-
     g = Grapher()
 
     # Transpose 20-40 to 0-20
@@ -40,7 +39,6 @@ def test_ascii_scale_values_equal():
 
 
 def test_ascii_scale_values_up():
-
     g = Grapher()
 
     # Transpose 20-40 to 0-20
@@ -65,6 +63,22 @@ def test_ascii_compress_values():
     # Test that we can fit the max_width exactly
     values = list(range(1, 12))
     assert g._scale_x_values(values=values, max_width=3) == [2, 5.5, 9.5]
+
+
+def test_sort_timeseries_values():
+    g = Grapher()
+    time_data = {
+        '1578162600': 5,
+        '1577903400': 2,
+        '1577817000': 1,
+    }
+    sorted_values = g._sort_timeseries_values(time_data)
+    expected_values = [
+        ('1577817000', 1),
+        ('1577903400', 2),
+        ('1578162600', 5),
+    ]
+    assert expected_values == sorted_values
 
 
 def test_ascii_round_floats_to_ints():
