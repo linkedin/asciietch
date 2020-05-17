@@ -8,19 +8,25 @@ pip3 install asciietch
 ```
 Then import asciietch and begin using it.
 ## Examples
-### Graphing 0-4 values
+### Graphing 0-4 values as a line graph
 ```python
 >>> from asciietch.graph import Grapher
 >>> g = Grapher()
 >>> values = [0, 1, 2, 3, 4]
 >>> print(g.asciigraph(values))
-```
-```
     -
    /
   /
  /
 /
+```
+### Graphing 0-4 values as a histogram
+```python
+>>> from asciietch.graph import Grapher
+>>> g = Grapher()
+>>> values = [0, 1, 2, 3, 4]
+>>> print(g.asciihist(values))
+▁▃▅▆█
 ```
 ### Graphing more values
 ```python
@@ -28,13 +34,13 @@ Then import asciietch and begin using it.
 >>> g = Grapher()
 >>> values = [0, 1, 2, 3, 4, 4, 3, 2, 1, 2, 2, 2]
 >>> print(g.asciigraph(values))
-```
-```
     --
    /  \
   /    \ ---
  /      -
 /
+>>> print(g.asciihist(values))
+▁▃▅▆██▆▅▃▅▅▅
 ```
 ### Graphing a large set of values and adding labels
 ```python
