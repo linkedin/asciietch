@@ -215,8 +215,8 @@ class Grapher(object):
 
         if start_ctime and end_ctime:
             fill_length = max_width - len(start_ctime) - len(end_ctime)
-            time_label = f'{start_ctime}{" " * fill_length}{end_ctime}\n'
-            result += time_label
+            time_label = f'{start_ctime} {" " * fill_length}{end_ctime}\n'
+            result += '\n' + time_label
 
         return result
 
