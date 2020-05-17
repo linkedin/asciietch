@@ -162,6 +162,45 @@ def test_timestamp_as_string_with_none_values():
     assert len(result) == 1
     assert result[0] > 4.5 and result[0] < 5
 
+
+class TestAsciiHist:
+    g = Grapher()
+    values = [1, 2, 3, 4]
+
+    def test_hist_with_no_axis_scaling_has_same_length_as_input_values(self):
+        ascii_histogram = self.g.asciihist(self.values)
+        assert len(ascii_histogram) == len(self.values)
+
+    def test_hist_prints_one_line(self):
+        ascii_histogram = self.g.asciihist(self.values)
+        assert len(ascii_histogram.splitlines()) == 1
+
+    def test_hist_with_label_prints_three_lines(self):
+        ascii_histogram = self.g.asciihist(self.values, label=True)
+        assert len(ascii_histogram.splitlines()) == 3
+
+    def test_hist_with_label_prints_max_and_min_values(self):
+        ascii_histogram = self.g.asciihist(self.values, label=True)
+        top_line, graph_line, bottom_line = ascii_histogram.splitlines()
+        max_val = max(self.values)
+        min_val = min(self.values)
+
+        assert f'Upper value: {max_val}' in top_line
+        assert f'Lower value: {min_val}' in bottom_line
+
+    def test_hist_with_label_prints_data_statistics(self):
+        ascii_histogram = self.g.asciihist(self.values, label=True)
+        top_line, graph_line, bottom_line = ascii_histogram.splitlines()
+
+        assert 'Mean:' in bottom_line
+        assert 'Std Dev:' in bottom_line
+
+    def test_hist_with_max_width_less_than_number_of_values(self):
+        """Graph should have a max width of max_width."""
+        ascii_histogram = self.g.asciihist(self.values, max_width=3)
+        assert len(ascii_histogram) == 3
+
+
 def test_surround_with_label_adds_two_extra_lines():
     """Surround with label adds a line above and below the graph string."""
     graph_string = \
