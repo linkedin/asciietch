@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # Copyright 2017 LinkedIn Corporation. All rights reserved. Licensed under the BSD-2 Clause license.
 # See LICENSE in the project root for license information.
-import statistics
 import random
+import statistics
 from datetime import datetime
 
 BORDER_FILL_CHARACTER = '*'
@@ -224,6 +224,64 @@ class Grapher(object):
 
         return result
 
+    def asciihist(self, values, max_width=None, label=False):
+        """Draw an ascii histogram of the given values.
+
+        Values can also be a dictionary of timestamp and data.
+        """
+        allowed_bars_in_order = ('▁', '▂', '▃', '▄', '▅', '▆', '▇', '█')
+
+        start_ctime = None
+        end_ctime = None
+
+        if not max_width:
+            max_width = 180
+
+        max_height = len(allowed_bars_in_order) - 1
+
+        # If this is a dict of timestamp -> value, sort the data, store the start/end time, and convert values to a list of values
+        if isinstance(values, dict):
+            time_series_sorted = self._sort_timeseries_values(values)
+            start_ctime, end_ctime = self._get_start_and_end_ctimes(time_series_sorted)
+            values = self._scale_x_values_timestamps(values=time_series_sorted, max_width=max_width)
+        values = [value for value in values if value is not None]
+        # print(values)
+
+        # Do value adjustments
+        adjusted_values = self._scale_x_values(values=values, max_width=max_width)
+        # print(adjusted_values)
+
+        # Getting upper/lower after scaling x values so we don't label a spike we can't see
+        upper_value = max(adjusted_values)
+        lower_value = min(adjusted_values)
+
+        adjusted_values = self._scale_y_values(values=adjusted_values, new_min=0,
+                                               new_max=max_height, scale_old_from_zero=False)
+        adjusted_values = self._round_floats_to_ints(values=adjusted_values)
+        # print(f'After scaling y: {adjusted_values}')
+
+        # Obtain Ascii Histogram String
+        field = [allowed_bars_in_order[val] for val in adjusted_values]
+
+        graph_string = self._draw_ascii_graph(field=field)
+
+        # Label the graph
+        if label:
+            stdev = statistics.stdev(values)
+            mean = statistics.mean(values)
+            result = self._surround_with_label(graph_string,
+                                               max_width,
+                                               upper_value,
+                                               lower_value,
+                                               stdev,
+                                               mean,
+                                               start_ctime,
+                                               end_ctime)
+        else:
+            result = graph_string
+
+        return result
+
 
 if __name__ == "__main__":
     g = Grapher()
@@ -233,3 +291,4 @@ if __name__ == "__main__":
         v = v + random.randint(-1, 1)
         values.append(v)
     print(g.asciigraph(values=values, max_height=20, max_width=100))
+    print(g.asciihist(values=values, max_width=100))
