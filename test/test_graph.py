@@ -28,7 +28,6 @@ def test_ascii_scale_values_down():
 
 
 def test_ascii_scale_values_equal():
-
     g = Grapher()
 
     # Transpose 20-40 to 0-20
@@ -40,7 +39,6 @@ def test_ascii_scale_values_equal():
 
 
 def test_ascii_scale_values_up():
-
     g = Grapher()
 
     # Transpose 20-40 to 0-20
@@ -65,6 +63,22 @@ def test_ascii_compress_values():
     # Test that we can fit the max_width exactly
     values = list(range(1, 12))
     assert g._scale_x_values(values=values, max_width=3) == [2, 5.5, 9.5]
+
+
+def test_sort_timeseries_values():
+    g = Grapher()
+    time_data = {
+        '1578162600': 5,
+        '1577903400': 2,
+        '1577817000': 1,
+    }
+    sorted_values = g._sort_timeseries_values(time_data)
+    expected_values = [
+        ('1577817000', 1),
+        ('1577903400', 2),
+        ('1578162600', 5),
+    ]
+    assert expected_values == sorted_values
 
 
 def test_ascii_round_floats_to_ints():
@@ -161,3 +175,77 @@ def test_timestamp_as_string_with_none_values():
     log.debug(f"result: {result}")
     assert len(result) == 1
     assert result[0] > 4.5 and result[0] < 5
+
+
+class TestAsciiHist:
+    g = Grapher()
+    values = [1, 2, 3, 4]
+
+    def test_hist_with_no_axis_scaling_has_same_length_as_input_values(self):
+        ascii_histogram = self.g.asciihist(self.values)
+        assert len(ascii_histogram) == len(self.values)
+
+    def test_hist_prints_one_line(self):
+        ascii_histogram = self.g.asciihist(self.values)
+        assert len(ascii_histogram.splitlines()) == 1
+
+    def test_hist_with_label_prints_three_lines(self):
+        ascii_histogram = self.g.asciihist(self.values, label=True)
+        assert len(ascii_histogram.splitlines()) == 3
+
+    def test_hist_with_label_prints_max_and_min_values(self):
+        ascii_histogram = self.g.asciihist(self.values, label=True)
+        top_line, graph_line, bottom_line = ascii_histogram.splitlines()
+        max_val = max(self.values)
+        min_val = min(self.values)
+
+        assert f'Upper value: {max_val}' in top_line
+        assert f'Lower value: {min_val}' in bottom_line
+
+    def test_hist_with_label_prints_data_statistics(self):
+        ascii_histogram = self.g.asciihist(self.values, label=True)
+        top_line, graph_line, bottom_line = ascii_histogram.splitlines()
+
+        assert 'Mean:' in bottom_line
+        assert 'Std Dev:' in bottom_line
+
+    def test_hist_with_max_width_less_than_number_of_values(self):
+        """Graph should have a max width of max_width."""
+        ascii_histogram = self.g.asciihist(self.values, max_width=3)
+        assert len(ascii_histogram) == 3
+
+
+class TestSurroundWithLabel:
+    graph_string = \
+        '''
+          /
+         /
+        /
+        '''
+    g = Grapher()
+
+    def test_surround_adds_two_extra_lines(self):
+        """Surround with label adds a line above and below the graph string."""
+        label_surrounded_string = self.g._surround_with_label(
+            self.graph_string,
+            100,
+            4,
+            0,
+            1.29,
+            2.5
+        )
+        assert len(label_surrounded_string.splitlines()) == len(self.graph_string.splitlines()) + 2
+
+    def test_surround_adds_three_lines_with_timestamps(self):
+        """Surround with label will add another line for timestamps at the end."""
+        label_surrounded_string = self.g._surround_with_label(
+            self.graph_string,
+            100,
+            4,
+            0,
+            1.29,
+            2.5,
+            start_ctime='Wed Jan  1 00:00:00 2020',
+            end_ctime='Sun Jan  5 00:00:00 2020',
+        )
+        assert len(label_surrounded_string.splitlines()) == len(self.graph_string.splitlines()) + 3

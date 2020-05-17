@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # Copyright 2017 LinkedIn Corporation. All rights reserved. Licensed under the BSD-2 Clause license.
 # See LICENSE in the project root for license information.
-import statistics
 import random
+import statistics
 from datetime import datetime
+
+BORDER_FILL_CHARACTER = '*'
+DEFAULT_MAX_WIDTH = 180
 
 
 class Grapher(object):
@@ -49,10 +52,11 @@ class Grapher(object):
         if scale_old_from_zero:
             y_min_value = 0
         y_max_value = max(values)
-        OldRange = (y_max_value - y_min_value) or 1  # Prevents division by zero if all values are the same
-        NewRange = (new_max - new_min)  # max_height is new_max
+        # Prevents division by zero if all values are the same
+        old_range = (y_max_value - y_min_value) or 1
+        new_range = (new_max - new_min)  # max_height is new_max
         for old_value in values:
-            new_value = (((old_value - y_min_value) * NewRange) / OldRange) + new_min
+            new_value = (((old_value - y_min_value) * new_range) / old_range) + new_min
             scaled_values.append(new_value)
         return scaled_values
 
@@ -121,28 +125,20 @@ class Grapher(object):
         graph_string = '\n'.join(row_strings)
         return graph_string
 
-    def asciigraph(self, values=None, max_height=None, max_width=None, label=False):
+    def asciigraph(self, values, max_height=None, max_width=None, label=False):
         '''
         Accepts a list of y values and returns an ascii graph
         Optionally values can also be a dictionary with a key of timestamp, and a value of value. InGraphs returns data in this format for example.
         '''
-        result = ''
-        border_fill_char = '*'
         start_ctime = None
         end_ctime = None
 
-        if not max_width:
-            max_width = 180
+        max_width = max_width or DEFAULT_MAX_WIDTH
 
         # If this is a dict of timestamp -> value, sort the data, store the start/end time, and convert values to a list of values
         if isinstance(values, dict):
-            time_series_sorted = sorted(list(values.items()), key=lambda x: x[0])  # Sort timestamp/value dict by the timestamps
-
-            start_timestamp = time_series_sorted[0][0]
-            end_timestamp = time_series_sorted[-1][0]
-
-            start_ctime = datetime.fromtimestamp(float(start_timestamp)).ctime()
-            end_ctime = datetime.fromtimestamp(float(end_timestamp)).ctime()
+            time_series_sorted = self._sort_timeseries_values(values)
+            start_ctime, end_ctime = self._get_start_and_end_ctimes(time_series_sorted)
             values = self._scale_x_values_timestamps(values=time_series_sorted, max_width=max_width)
         values = [value for value in values if value is not None]
 
@@ -161,23 +157,121 @@ class Grapher(object):
         graph_string = self._draw_ascii_graph(field=field)
 
         # Label the graph
-        if label:
-            top_label = 'Upper value: {upper_value:.2f} '.format(upper_value=upper_value).ljust(max_width, border_fill_char)
-            result += top_label + '\n'
-        result += '{graph_string}\n'.format(graph_string=graph_string)
+
         if label:
             stdev = statistics.stdev(values)
             mean = statistics.mean(values)
 
-            lower = f'Lower value: {lower_value:.2f} '
-            stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
-            fill_length = max_width - len(lower) - len(stats)
-            stat_label = f'{lower}{"*" * fill_length}{stats}\n'
-            result += stat_label
+            result = self._surround_with_label(graph_string,
+                                               max_width,
+                                               upper_value,
+                                               lower_value,
+                                               stdev,
+                                               mean,
+                                               start_ctime,
+                                               end_ctime)
+        else:
+            result = graph_string
+        return result
 
-            if start_ctime and end_ctime:
-                fill_length = max_width - len(start_ctime) - len(end_ctime)
-                result += f'{start_ctime}{" " * fill_length}{end_ctime}\n'
+    def _get_start_and_end_ctimes(self, time_series_sorted):
+        """Get the start and end times of a sorted time series data as ctime. """
+        start_timestamp = time_series_sorted[0][0]
+        end_timestamp = time_series_sorted[-1][0]
+
+        start_ctime = datetime.fromtimestamp(float(start_timestamp)).ctime()
+        end_ctime = datetime.fromtimestamp(float(end_timestamp)).ctime()
+
+        return start_ctime, end_ctime
+
+    def _sort_timeseries_values(self, values_dict):
+        """Sort the data by time if data is given as a time->value dictionary.
+
+        Sort the timeseries data and return as list of tuples.
+        """
+        return sorted(values_dict.items(), key=lambda x: x[0])
+
+    def _surround_with_label(self,
+                             graph_string,
+                             max_width,
+                             max_val,
+                             min_val,
+                             stdev,
+                             mean,
+                             start_ctime=None,
+                             end_ctime=None):
+        """Surround the graph string with labels.
+
+        It adds a top label with the max value of the data.
+        And a bottom label with min value and data statistics.
+        """
+        top_label = f'Upper value: {max_val:.2f} '.ljust(max_width, BORDER_FILL_CHARACTER)
+        lower = f'Lower value: {min_val:.2f} '
+        stats = f' Mean: {mean:.2f} *** Std Dev: {stdev:.2f} ******'
+        fill_length = max_width - len(lower) - len(stats)
+        stat_label = f'{lower}{"*" * fill_length}{stats}'
+
+        result = top_label + '\n' + graph_string + '\n' + stat_label
+
+        if start_ctime and end_ctime:
+            fill_length = max_width - len(start_ctime) - len(end_ctime)
+            time_label = f'{start_ctime} {" " * fill_length}{end_ctime}\n'
+            result += '\n' + time_label
+
+        return result
+
+    def asciihist(self, values, max_width=None, label=False):
+        """Draw an ascii histogram of the given values.
+
+        Values can also be a dictionary of timestamp and data.
+        """
+        allowed_bars_in_order = ('▁', '▂', '▃', '▄', '▅', '▆', '▇', '█')
+
+        start_ctime = None
+        end_ctime = None
+
+        max_width = max_width or DEFAULT_MAX_WIDTH
+
+        max_height = len(allowed_bars_in_order) - 1
+
+        # If this is a dict of timestamp -> value, sort the data, store the start/end time, and convert values to a list of values
+        if isinstance(values, dict):
+            time_series_sorted = self._sort_timeseries_values(values)
+            start_ctime, end_ctime = self._get_start_and_end_ctimes(time_series_sorted)
+            values = self._scale_x_values_timestamps(values=time_series_sorted, max_width=max_width)
+
+        values = [value for value in values if value is not None]
+
+        # Do value adjustments
+        adjusted_values = self._scale_x_values(values=values, max_width=max_width)
+
+        # Getting upper/lower after scaling x values so we don't label a spike we can't see
+        upper_value = max(adjusted_values)
+        lower_value = min(adjusted_values)
+
+        adjusted_values = self._scale_y_values(values=adjusted_values, new_min=0,
+                                               new_max=max_height, scale_old_from_zero=False)
+        adjusted_values = self._round_floats_to_ints(values=adjusted_values)
+
+        # Obtain Ascii Histogram String
+        field = [allowed_bars_in_order[val] for val in adjusted_values]
+
+        graph_string = self._draw_ascii_graph(field=field)
+
+        # Label the graph
+        if label:
+            stdev = statistics.stdev(values)
+            mean = statistics.mean(values)
+            result = self._surround_with_label(graph_string,
+                                               max_width,
+                                               upper_value,
+                                               lower_value,
+                                               stdev,
+                                               mean,
+                                               start_ctime,
+                                               end_ctime)
+        else:
+            result = graph_string
 
         return result
 
@@ -190,3 +284,4 @@ if __name__ == "__main__":
         v = v + random.randint(-1, 1)
         values.append(v)
     print(g.asciigraph(values=values, max_height=20, max_width=100))
+    print(g.asciihist(values=values, max_width=100))
